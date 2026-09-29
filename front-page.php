@@ -182,9 +182,27 @@ $tb_dest_primary = ! empty( $tb_dest_posts ) ? array_shift( $tb_dest_posts ) : n
 							</div>
 						</div>
 					<?php endforeach; ?>
-					<a href="<?php echo esc_url( get_term_link( get_taxonomy( 'destinazione' )->name ) ); ?>" style="font-size:13px;font-weight:700;color:var(--tb-accent,#D6272E);text-transform:uppercase;letter-spacing:.03em;">
-						<?php esc_html_e( 'More from Destinazioni ›', 'travelblogs' ); ?>
-					</a>
+					<?php
+					// Link "More from Destinazioni": punta all'archivio del primo
+					// termine reale disponibile (quello del post principale, o in
+					// mancanza del primo termine di primo livello); se non esiste
+					// alcun termine `destinazione`, il link viene omesso invece di
+					// generare un WP_Error (get_term_link() richiede un termine
+					// vero, non il nome della tassonomia).
+					$tb_dest_link_term = ( ! is_wp_error( $tb_dp_terms ) && ! empty( $tb_dp_terms ) ) ? $tb_dp_terms[0] : null;
+					if ( ! $tb_dest_link_term ) {
+						$tb_dest_top_terms = get_terms( array( 'taxonomy' => 'destinazione', 'parent' => 0, 'hide_empty' => true, 'number' => 1 ) );
+						if ( ! is_wp_error( $tb_dest_top_terms ) && ! empty( $tb_dest_top_terms ) ) {
+							$tb_dest_link_term = $tb_dest_top_terms[0];
+						}
+					}
+					$tb_dest_link_url = $tb_dest_link_term ? get_term_link( $tb_dest_link_term ) : '';
+					if ( $tb_dest_link_url && ! is_wp_error( $tb_dest_link_url ) ) :
+						?>
+						<a href="<?php echo esc_url( $tb_dest_link_url ); ?>" style="font-size:13px;font-weight:700;color:var(--tb-accent,#D6272E);text-transform:uppercase;letter-spacing:.03em;">
+							<?php esc_html_e( 'More from Destinazioni ›', 'travelblogs' ); ?>
+						</a>
+					<?php endif; ?>
 				</div>
 			</div>
 		</div>
