@@ -205,6 +205,41 @@ img{ max-width:100%; display:block; }
   justify-content:center; font-size:10px;
 }
 
+/* ---------- mappa "countries visited" (pagina Profilo) ---------- */
+.tb-gmap-pin{
+  position:absolute; border-radius:50%; color:#fff; font-weight:800; font-family:'Archivo',sans-serif;
+  display:flex; align-items:center; justify-content:center; box-shadow:0 2px 6px rgba(0,0,0,.25);
+  border:2px solid #fff; transform:translate(-50%,-50%);
+}
+.tb-gmap-card{
+  position:absolute; width:230px; background:#fff; border-radius:10px;
+  box-shadow:0 10px 28px rgba(0,0,0,.2); overflow:hidden;
+}
+
+/* ---------- pagina Foto: badge conteggio immagini sulla card galleria ---------- */
+.tb-gcount{
+  position:absolute; top:12px; right:12px; background:rgba(15,16,19,.75); color:#fff;
+  font-size:12px; font-weight:700; padding:4px 12px; border-radius:20px;
+}
+
+/* ---------- pagina Video: bottone play sulla thumbnail ---------- */
+.tb-play{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
+.tb-play span{
+  width:52px; height:52px; border-radius:50%; background:rgba(255,255,255,.92);
+  display:flex; align-items:center; justify-content:center; color: var(--tb-accent); font-size:18px;
+}
+
+/* ---------- righe categoria generiche (News/Video Categories) ---------- */
+.tb-catrow{ display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid #ECEAE4; font-size:14px; }
+.tb-catrow:last-child{ border-bottom:none; }
+.tb-catnum{ background: color-mix(in srgb, var(--tb-accent) 10%, transparent); color: var(--tb-accent); font-size:12px; font-weight:800; padding:3px 10px; border-radius:12px; }
+
+/* ---------- pagina Profilo: bandiere paesi visitati ---------- */
+.tb-flag{
+  width:100%; aspect-ratio:3/2; border-radius:6px; display:flex; align-items:center; justify-content:center;
+  color:#fff; font-size:11px; font-weight:700; letter-spacing:.02em; box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);
+}
+
 /* ---------- body articolo ---------- */
 .tb-body p{ font-size:15px; line-height:1.8; color: var(--tb-body-text); margin:0 0 20px; }
 .tb-body h3{ font-size:17px; margin:28px 0 12px; }

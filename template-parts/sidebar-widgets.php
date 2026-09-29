@@ -132,20 +132,23 @@ function tb_widget_tags( $limit = 12 ) {
  * Widget "News" / "Recent Stories": ultimi N articoli (news o post),
  * con thumb + titolo (+ pillola destinazione, se richiesta).
  *
- * @param string $post_type   'news' oppure 'post'.
- * @param string $widget_title
- * @param int    $count
- * @param bool   $with_cat_pill  mostra la pillola destinazione sotto il titolo.
+ * @param string   $post_type   'news' oppure 'post'.
+ * @param string   $widget_title
+ * @param int      $count
+ * @param bool     $with_cat_pill  mostra la pillola destinazione sotto il titolo.
+ * @param int|null $author_id      se impostato, limita agli articoli di quell'autore (pagina Profilo).
  */
-function tb_widget_recent( $post_type, $widget_title, $count = 3, $with_cat_pill = false ) {
-	$items = get_posts(
-		array(
-			'post_type'      => $post_type,
-			'posts_per_page' => $count,
-			'orderby'        => 'date',
-			'order'          => 'DESC',
-		)
+function tb_widget_recent( $post_type, $widget_title, $count = 3, $with_cat_pill = false, $author_id = null ) {
+	$tb_args = array(
+		'post_type'      => $post_type,
+		'posts_per_page' => $count,
+		'orderby'        => 'date',
+		'order'          => 'DESC',
 	);
+	if ( $author_id ) {
+		$tb_args['author'] = $author_id;
+	}
+	$items = get_posts( $tb_args );
 
 	if ( empty( $items ) ) {
 		return;
