@@ -1,0 +1,250 @@
+/* =========================================================
+   Travelblogs — foglio di stile principale
+   Porta a WordPress il design del canvas Trawell-style.
+   Le classi .tb-* corrispondono 1:1 a quelle usate nel mockup
+   (Claude Design canvas), cosi' i template restano leggibili
+   confrontandoli con il mockup.
+   ========================================================= */
+
+:root{
+  --tb-accent: #D6272E;
+  --tb-ink: #1F2023;
+  --tb-body-text: #33353A;
+  --tb-muted: #5B5E64;
+  --tb-faint: #8A8D94;
+  --tb-border: #ECEAE4;
+  --tb-border-strong: #E2E0D9;
+  --tb-border-widget: #E5E3DC;
+  --tb-sidebar-bg: #EFEFEF;
+  --tb-dark: #15171B;
+  --tb-dark-2: #181A1E;
+
+  /* palette continenti — usata per tassonomia Destinazione */
+  --tb-c-sudamerica: #D6272E;
+  --tb-c-asia:       #2E8B57;
+  --tb-c-africa:     #B4711F;
+  --tb-c-europa:     #2C6E9E;
+  --tb-c-oceania:    #6B4A9E;
+}
+
+*{ box-sizing: border-box; }
+
+body{
+  margin:0;
+  background:#FFFFFF;
+  font-family:'Work Sans', sans-serif;
+  color: var(--tb-ink);
+}
+a{ text-decoration:none; color:inherit; }
+h1,h2,h3{ font-family:'Archivo', sans-serif; margin:0; }
+img{ max-width:100%; display:block; }
+
+.tb-container{ max-width:1280px; margin:0 auto; padding: 36px 24px 60px; }
+
+/* ---------- ticker bar ---------- */
+.tb-ticker{
+  background: var(--tb-dark-2); color:#B9BCC3;
+  display:flex; align-items:center; height:34px; padding:0 24px;
+  font-size:12px; gap:16px;
+}
+.tb-ticker .tb-ticker-label{ color:#8A8D94; font-weight:700; letter-spacing:.06em; }
+.tb-ticker .tb-ticker-title{ flex-grow:1; color:#fff; }
+.tb-ticker .tb-ticker-date{ color:#6C6F76; }
+.tb-ticker .tb-search{
+  border:1px solid #35383F; border-radius:2px; padding:5px 10px; color:#8A8D94; margin-left:auto;
+}
+
+/* ---------- header / logo ---------- */
+.tb-brandbar{
+  background:#fff; padding:28px 24px 20px; text-align:center; border-bottom:1px solid var(--tb-border);
+}
+.tb-brandbar img.tb-logo{ margin: 0 auto; }
+.tb-brandbar .tb-tagline{ font-size:14px; color:#7A7D84; font-style:italic; margin-top:6px; }
+
+/* ---------- nav ---------- */
+.tb-nav{
+  background:#fff; display:flex; justify-content:center; flex-wrap:wrap;
+  border-bottom:1px solid var(--tb-border);
+  box-shadow:0 2px 6px rgba(0,0,0,.06);
+  position:relative; z-index:2;
+}
+.tb-navlink{
+  padding:16px 18px; font-size:14px; font-weight:600; color:#3A3D42;
+  border-bottom:3px solid transparent;
+}
+.tb-navlink:hover{ color: var(--tb-accent); }
+.tb-navlink.active{ color: var(--tb-accent); border-bottom-color: var(--tb-accent); }
+
+/* ---------- shared components ---------- */
+.tb-photo{ background-size:cover; background-position:center; position:relative; background-color:#e5e3dc; }
+
+.tb-cat{
+  display:inline-block; background: color-mix(in srgb, var(--tb-accent) 10%, transparent);
+  color: var(--tb-accent); font-size:11px; font-weight:700; letter-spacing:.03em;
+  padding:6px 14px; text-transform:uppercase; border-radius:20px;
+}
+/* varianti colorate per continente, applicate via classe sul termine tassonomia */
+.tb-cat.continente-sud-america{ background: rgba(214,39,46,.10); color: var(--tb-c-sudamerica); }
+.tb-cat.continente-asia       { background: rgba(46,139,87,.10); color: var(--tb-c-asia); }
+.tb-cat.continente-africa     { background: rgba(180,113,31,.10); color: var(--tb-c-africa); }
+.tb-cat.continente-europa     { background: rgba(44,110,158,.10); color: var(--tb-c-europa); }
+.tb-cat.continente-oceania    { background: rgba(107,74,158,.10); color: var(--tb-c-oceania); }
+
+.tb-readmore{
+  display:inline-flex; align-items:center; gap:6px; color: var(--tb-accent);
+  font-weight:700; font-size:13px; text-transform:uppercase; letter-spacing:.03em;
+}
+
+.tb-secbar{
+  background:transparent; color: var(--tb-ink); font-family:'Archivo',sans-serif;
+  font-weight:700; font-size:15px; letter-spacing:.01em; padding:0 0 10px;
+  border-bottom:1px solid var(--tb-border-widget); margin-bottom:20px;
+}
+
+.tb-widget-title{
+  border-bottom:1px solid var(--tb-border-widget); padding-bottom:10px;
+  font-family:'Archivo',sans-serif; font-weight:700; font-size:13px;
+  text-transform:uppercase; letter-spacing:.06em; color: var(--tb-ink); margin-bottom:14px;
+}
+
+.tb-title-bar{
+  position:relative; height:8px; background: var(--tb-border);
+  margin-bottom:36px; box-shadow:0 2px 3px rgba(0,0,0,.05);
+}
+.tb-title-bar::after{
+  content:''; position:absolute; left:26px; top:8px; width:0; height:0;
+  border-left:7px solid transparent; border-right:7px solid transparent;
+  border-top:7px solid var(--tb-border);
+}
+
+.tb-page{
+  width:34px; height:34px; border:1px solid #DAD8D1; border-radius:50%;
+  display:flex; align-items:center; justify-content:center; font-size:13px;
+  font-weight:600; color:#3A3D42;
+}
+.tb-page.active{ background: var(--tb-accent); border-color: var(--tb-accent); color:#fff; }
+.tb-pagination{ display:flex; gap:8px; }
+
+.tb-chip{
+  border:1px solid #DAD8D1; padding:9px 16px; font-size:13px; font-weight:600; border-radius:20px;
+}
+.tb-chip.active{ background: var(--tb-accent); border-color: var(--tb-accent); color:#fff; }
+
+/* destinazioni — righe con pallino colorato + conteggio */
+.tb-destrow{
+  display:flex; justify-content:space-between; align-items:center; padding:12px 0;
+  border-bottom:1px solid var(--tb-border); font-size:14px; font-weight:600;
+}
+.tb-destrow:last-child{ border-bottom:none; }
+.tb-destcount{
+  background: rgba(0,0,0,.06); color: var(--tb-ink); font-size:12px; font-weight:800;
+  padding:3px 10px; border-radius:12px;
+}
+.tb-dot{ width:9px; height:9px; border-radius:50%; display:inline-block; margin-right:10px; }
+
+/* ---------- layout a due/tre colonne ---------- */
+.tb-layout{ display:flex; gap:40px; align-items:flex-start; }
+.tb-col-main{ flex:1 1 840px; min-width:0; }
+.tb-col-main--narrow{ flex:1 1 700px; }
+.tb-col-side{ flex:0 0 200px; }
+
+.tb-sidebar{
+  flex:0 0 340px; display:flex; flex-direction:column; gap:20px;
+  background: var(--tb-sidebar-bg); padding:24px; border-radius:12px;
+}
+.tb-widget-card{ background:#fff; border-radius:10px; padding:22px 24px; }
+
+/* ---------- banner mappa full-width (stile Google Maps) ---------- */
+.tb-gmap{
+  position:relative; width:100%; height:460px; overflow:hidden;
+  background:
+    radial-gradient(circle at 15% 25%,#CFE0D2 0,transparent 40%),
+    radial-gradient(circle at 80% 15%,#D8E2CE 0,transparent 45%),
+    radial-gradient(circle at 60% 80%,#CEE0DE 0,transparent 50%),
+    repeating-linear-gradient(0deg,rgba(150,165,140,.10) 0px,rgba(150,165,140,.10) 1px,transparent 1px,transparent 34px),
+    repeating-linear-gradient(90deg,rgba(150,165,140,.10) 0px,rgba(150,165,140,.10) 1px,transparent 1px,transparent 34px),
+    #EDEFE4;
+}
+.tb-gmap.tb-gmap--inline{ height:360px; border-radius:12px; }
+.tb-gmap-toggle{
+  position:absolute; top:16px; left:16px; display:flex; overflow:hidden; border-radius:4px;
+  background:#fff; box-shadow:0 2px 8px rgba(0,0,0,.15); font-size:13px; font-weight:600; color:#3A3D42;
+}
+.tb-gmap-toggle span{ padding:10px 18px; }
+.tb-gmap-toggle span.active{ background:#F1EFEA; font-weight:700; }
+.tb-gmap-zoom{
+  position:absolute; right:16px; bottom:56px; display:flex; flex-direction:column; width:34px;
+  background:#fff; border-radius:4px; box-shadow:0 2px 8px rgba(0,0,0,.15); overflow:hidden;
+}
+.tb-gmap-zoom span{
+  height:34px; display:flex; align-items:center; justify-content:center; font-size:18px;
+  border-bottom:1px solid var(--tb-border); color:#3A3D42;
+}
+.tb-gmap-attrib{ position:absolute; right:16px; bottom:12px; font-size:11px; color:rgba(0,0,0,.5); }
+.tb-pin{
+  position:absolute; width:30px; height:30px; border-radius:50% 50% 50% 0;
+  transform:translate(-50%,-100%) rotate(-45deg); display:flex; align-items:center; justify-content:center;
+  box-shadow:0 3px 8px rgba(0,0,0,.25); border:3px solid #fff; background: var(--tb-accent);
+}
+.tb-pin span{ transform:rotate(45deg); color:#fff; font-size:12px; font-weight:800; font-family:'Archivo',sans-serif; }
+.tb-mapcard{
+  position:absolute; width:230px; background:#fff; border-radius:10px;
+  box-shadow:0 8px 24px rgba(0,0,0,.18); overflow:hidden;
+}
+.tb-mapcard .tb-mapcard-body{ padding:12px 14px; }
+.tb-mapcard .tb-mapcard-kicker{ font-size:10px; color: var(--tb-accent); font-weight:800; text-transform:uppercase; letter-spacing:.05em; margin-bottom:3px; }
+.tb-mapcard .tb-mapcard-title{ font-size:14px; font-weight:700; margin-bottom:4px; }
+.tb-mapcard .tb-mapcard-date{ font-size:12px; color:#7A7D84; }
+.tb-gmap-legend{
+  position:absolute; left:16px; bottom:56px; background:#fff; border-radius:20px;
+  padding:6px 8px 6px 6px; display:flex; align-items:center; gap:8px;
+  box-shadow:0 3px 10px rgba(0,0,0,.15); font-size:11px; font-weight:700; color:#3A3D42;
+}
+.tb-gmap-legend .tb-legend-dot{
+  width:20px; height:20px; border-radius:50%; color:#fff; display:flex; align-items:center;
+  justify-content:center; font-size:10px;
+}
+
+/* ---------- body articolo ---------- */
+.tb-body p{ font-size:15px; line-height:1.8; color: var(--tb-body-text); margin:0 0 20px; }
+.tb-body h3{ font-size:17px; margin:28px 0 12px; }
+
+/* ---------- pagina Post: sidebar autore sticky ---------- */
+.tb-author-side{ display:flex; flex-direction:column; gap:22px; position:sticky; top:24px; }
+.tb-author-card{ display:flex; flex-direction:column; align-items:flex-start; gap:10px; }
+.tb-author-avatar{ width:64px; height:64px; border-radius:50%; }
+.tb-author-label{ font-size:11px; color:#8A8D94; text-transform:uppercase; letter-spacing:.04em; }
+.tb-author-name{ font-size:15px; font-weight:700; }
+.tb-share-row{ display:flex; gap:8px; }
+.tb-share{
+  width:34px; height:34px; border-radius:50%; border:1px solid #DAD8D1;
+  display:flex; align-items:center; justify-content:center; font-size:13px; color:#3A3D42;
+}
+.tb-postnav{ border-top:1px solid var(--tb-border); padding-top:20px; display:flex; flex-direction:column; gap:18px; }
+.tb-postnav a{ display:flex; gap:12px; align-items:center; }
+.tb-postnav .tb-photo{ width:56px; height:56px; border-radius:8px; flex-shrink:0; }
+.tb-postnav-eyebrow{ font-size:10px; color:#8A8D94; text-transform:uppercase; letter-spacing:.04em; margin-bottom:3px; }
+.tb-postnav-title{ font-size:12px; font-weight:600; line-height:1.35; }
+
+/* ---------- footer ---------- */
+.tb-footer{ background: var(--tb-dark); color:#B9BCC3; margin-top:24px; }
+.tb-footer-grid{
+  max-width:1280px; margin:0 auto; padding:48px 24px; display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr)); gap:32px;
+}
+.tb-footer-grid h4{
+  color:#fff; font-family:'Archivo',sans-serif; font-weight:700; font-size:14px;
+  border-bottom:1px solid #33363C; padding-bottom:10px; margin-bottom:14px;
+}
+.tb-footer-grid p{ font-size:13px; line-height:1.7; margin:0; }
+.tb-footer-social{ display:flex; gap:14px; font-size:14px; }
+.tb-footer-bottom{
+  border-top:1px solid #24262B; padding:14px 24px; text-align:center; font-size:12px; color:#6C6F76;
+}
+
+/* ---------- responsive minimo ---------- */
+@media (max-width: 900px){
+  .tb-layout{ flex-direction:column; }
+  .tb-sidebar{ flex:1 1 auto; width:100%; }
+  .tb-col-side{ flex:1 1 auto; width:100%; position:static !important; }
+}

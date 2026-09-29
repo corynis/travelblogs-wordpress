@@ -1,0 +1,15 @@
+/*
+Theme Name: Travelblogs
+Theme URI: https://travelblogs.it
+Author: Corynis SASU
+Author URI: https://corynis.fr
+Description: Tema custom per Travelblogs.it — diari di viaggio, capitoli, news. Design ispirato al tema Trawell (ThemeForest), costruito a partire dal mockup Claude Design del progetto.
+Version: 0.1.0
+Requires at least: 6.4
+Requires PHP: 8.1
+License: proprietario (uso interno Corynis / Travelblogs)
+Text Domain: travelblogs
+*/
+
+/* Il grosso dello stile vive in assets/css/travelblogs.css (enqueued da functions.php).
+   Questo file resta minimo: WordPress richiede la sua presenza per riconoscere il tema. */
