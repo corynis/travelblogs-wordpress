@@ -216,6 +216,23 @@ img{ max-width:100%; display:block; }
   box-shadow:0 10px 28px rgba(0,0,0,.2); overflow:hidden;
 }
 
+/* ---------- Home: slider principale (ultime News) ---------- */
+.tb-slide{ opacity:0; visibility:hidden; transition:opacity .5s ease; z-index:1; }
+.tb-slide.is-active{ opacity:1; visibility:visible; z-index:2; }
+.tb-slider-arrow{
+  position:absolute; top:50%; transform:translateY(-50%); z-index:3; width:40px; height:40px;
+  border-radius:50%; border:none; background:rgba(15,16,19,.55); color:#fff; font-size:20px;
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+}
+.tb-slider-prev{ left:16px; }
+.tb-slider-next{ right:16px; }
+.tb-slider-arrow:hover{ background:rgba(15,16,19,.8); }
+.tb-slider-dots{ position:absolute; right:20px; bottom:20px; z-index:3; display:flex; gap:8px; }
+.tb-slider-dot{
+  width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,.5); cursor:pointer;
+}
+.tb-slider-dot.is-active{ background:#fff; }
+
 /* ---------- pagina Foto: badge conteggio immagini sulla card galleria ---------- */
 .tb-gcount{
   position:absolute; top:12px; right:12px; background:rgba(15,16,19,.75); color:#fff;

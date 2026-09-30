@@ -11,19 +11,35 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 get_header();
 
-// L'hero e gli "ultimi aggiornamenti" pescano dagli articoli di diario
-// (CPT nativo `post`, collegato a un capitolo via meta _capitolo_id — vedi Notion 9.9).
-$tb_hero_query = new WP_Query(
+// "Ultimi aggiornamenti" pesca dagli articoli di diario (CPT nativo `post`,
+// collegato a un capitolo via meta _capitolo_id — vedi Notion 9.9).
+$tb_recent_query = new WP_Query(
 	array(
 		'post_type'      => 'post',
-		'posts_per_page' => 4,
+		'posts_per_page' => 3,
 		'orderby'        => 'date',
 		'order'          => 'DESC',
 	)
 );
-$tb_hero_posts   = $tb_hero_query->posts;
-$tb_hero_post    = ! empty( $tb_hero_posts ) ? array_shift( $tb_hero_posts ) : null;
-$tb_recent_posts = $tb_hero_posts; // i restanti 3, per "Ultimi aggiornamenti".
+$tb_recent_posts = $tb_recent_query->posts;
+
+// Slider principale sotto il menu — riprende le ultime News, come nella
+// versione precedente del sito (a differenza del mockup Canvas, che aveva
+// un hero statico singolo: qui usiamo dati reali e rotanti).
+$tb_slider_query = new WP_Query(
+	array(
+		'post_type'      => 'news',
+		'posts_per_page' => 5,
+		'orderby'        => 'date',
+		'order'          => 'DESC',
+	)
+);
+$tb_slides = $tb_slider_query->posts;
+// Se non ci sono ancora news, ripiega sugli ultimi articoli di diario così
+// lo slider non resta vuoto.
+if ( empty( $tb_slides ) ) {
+	$tb_slides = array_slice( $tb_recent_posts, 0, 5 );
+}
 
 $tb_news_query = new WP_Query(
 	array(
@@ -52,28 +68,65 @@ $tb_dest_posts   = $tb_dest_query->posts;
 $tb_dest_primary = ! empty( $tb_dest_posts ) ? array_shift( $tb_dest_posts ) : null;
 ?>
 
-<?php if ( $tb_hero_post ) : ?>
-<div class="tb-photo tb-hero" style="width:100%;height:460px;<?php echo has_post_thumbnail( $tb_hero_post ) ? '' : 'background-image:linear-gradient(120deg,#0B3A2E 0%,#123A55 45%,#1B4A63 100%);'; ?>">
-	<?php if ( has_post_thumbnail( $tb_hero_post ) ) : ?>
-		<div style="position:absolute;inset:0;background-image:url('<?php echo esc_url( get_the_post_thumbnail_url( $tb_hero_post, 'tb-hero' ) ); ?>');background-size:cover;background-position:center;"></div>
-	<?php endif; ?>
-	<div style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.65) 0%,rgba(0,0,0,.1) 55%,rgba(0,0,0,0) 100%);"></div>
-	<div style="position:absolute;left:0;bottom:0;width:520px;max-width:100%;background:rgba(15,16,19,.82);color:#fff;padding:22px 26px;">
-		<div style="display:flex;align-items:center;gap:14px;margin-bottom:10px;">
-			<?php
-			$tb_hero_terms = get_the_terms( $tb_hero_post, 'destinazione' );
-			if ( ! is_wp_error( $tb_hero_terms ) && ! empty( $tb_hero_terms ) ) {
-				tb_cat_pill( $tb_hero_terms[0]->name, $tb_hero_terms[0]->name );
-			} else {
-				tb_cat_pill( __( 'Destinazioni', 'travelblogs' ) );
-			}
-			?>
-			<span style="font-size:12px;color:#B9BCC3;"><?php echo esc_html( get_the_date( '', $tb_hero_post ) ); ?></span>
+<?php if ( ! empty( $tb_slides ) ) : ?>
+<div class="tb-slider" style="width:100%;height:460px;position:relative;overflow:hidden;">
+	<?php foreach ( $tb_slides as $tb_i => $tb_slide ) :
+		$tb_slide_terms = get_the_terms( $tb_slide, 'destinazione' );
+		if ( is_wp_error( $tb_slide_terms ) || empty( $tb_slide_terms ) ) {
+			$tb_slide_terms = get_the_terms( $tb_slide, 'categoria_news' );
+		}
+		$tb_slide_label = ( ! is_wp_error( $tb_slide_terms ) && ! empty( $tb_slide_terms ) ) ? $tb_slide_terms[0]->name : __( 'Destinazioni', 'travelblogs' );
+		?>
+		<div class="tb-slide tb-photo<?php echo ( 0 === $tb_i ) ? ' is-active' : ''; ?>" style="position:absolute;inset:0;<?php echo has_post_thumbnail( $tb_slide ) ? '' : 'background-image:linear-gradient(120deg,#0B3A2E 0%,#123A55 45%,#1B4A63 100%);'; ?>">
+			<?php if ( has_post_thumbnail( $tb_slide ) ) : ?>
+				<div style="position:absolute;inset:0;background-image:url('<?php echo esc_url( get_the_post_thumbnail_url( $tb_slide, 'tb-hero' ) ); ?>');background-size:cover;background-position:center;"></div>
+			<?php endif; ?>
+			<div style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.65) 0%,rgba(0,0,0,.1) 55%,rgba(0,0,0,0) 100%);"></div>
+			<div style="position:absolute;left:0;bottom:0;width:520px;max-width:100%;background:rgba(15,16,19,.82);color:#fff;padding:22px 26px;">
+				<div style="display:flex;align-items:center;gap:14px;margin-bottom:10px;">
+					<?php tb_cat_pill( $tb_slide_label, $tb_slide_label ); ?>
+					<span style="font-size:12px;color:#B9BCC3;"><?php echo esc_html( get_the_date( '', $tb_slide ) ); ?></span>
+				</div>
+				<h1 style="font-size:26px;line-height:1.25;color:#fff;">
+					<a href="<?php echo esc_url( get_permalink( $tb_slide ) ); ?>" style="color:#fff;"><?php echo esc_html( get_the_title( $tb_slide ) ); ?></a>
+				</h1>
+			</div>
 		</div>
-		<h1 style="font-size:26px;line-height:1.25;color:#fff;">
-			<a href="<?php echo esc_url( get_permalink( $tb_hero_post ) ); ?>" style="color:#fff;"><?php echo esc_html( get_the_title( $tb_hero_post ) ); ?></a>
-		</h1>
-	</div>
+	<?php endforeach; ?>
+
+	<?php if ( count( $tb_slides ) > 1 ) : ?>
+		<button type="button" class="tb-slider-arrow tb-slider-prev" aria-label="<?php esc_attr_e( 'Slide precedente', 'travelblogs' ); ?>">‹</button>
+		<button type="button" class="tb-slider-arrow tb-slider-next" aria-label="<?php esc_attr_e( 'Slide successiva', 'travelblogs' ); ?>">›</button>
+		<div class="tb-slider-dots">
+			<?php foreach ( $tb_slides as $tb_i => $tb_slide ) : ?>
+				<span class="tb-slider-dot<?php echo ( 0 === $tb_i ) ? ' is-active' : ''; ?>" data-slide="<?php echo (int) $tb_i; ?>"></span>
+			<?php endforeach; ?>
+		</div>
+		<script>
+		(function(){
+			var root = document.currentScript.closest('.tb-slider');
+			var slides = root.querySelectorAll('.tb-slide');
+			var dots = root.querySelectorAll('.tb-slider-dot');
+			var current = 0;
+			var timer;
+			function show(i){
+				slides[current].classList.remove('is-active');
+				dots[current].classList.remove('is-active');
+				current = (i + slides.length) % slides.length;
+				slides[current].classList.add('is-active');
+				dots[current].classList.add('is-active');
+			}
+			function next(){ show(current + 1); }
+			function restart(){ clearInterval(timer); timer = setInterval(next, 6000); }
+			root.querySelector('.tb-slider-prev').addEventListener('click', function(){ show(current - 1); restart(); });
+			root.querySelector('.tb-slider-next').addEventListener('click', function(){ show(current + 1); restart(); });
+			dots.forEach(function(dot){
+				dot.addEventListener('click', function(){ show(parseInt(dot.dataset.slide, 10)); restart(); });
+			});
+			restart();
+		})();
+		</script>
+	<?php endif; ?>
 </div>
 <?php endif; ?>
 
@@ -101,7 +154,10 @@ $tb_dest_primary = ! empty( $tb_dest_posts ) ? array_shift( $tb_dest_posts ) : n
 							<h3 style="font-size:19px;margin-bottom:8px;">
 								<a href="<?php echo esc_url( get_permalink( $tb_p ) ); ?>"><?php echo esc_html( get_the_title( $tb_p ) ); ?></a>
 							</h3>
-							<?php if ( ! is_wp_error( $tb_terms ) && ! empty( $tb_terms ) ) { tb_cat_pill( $tb_terms[0]->name, $tb_terms[0]->name ); } ?>
+							<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+								<?php if ( ! is_wp_error( $tb_terms ) && ! empty( $tb_terms ) ) { tb_cat_pill( $tb_terms[0]->name, $tb_terms[0]->name ); } ?>
+								<span style="font-size:12px;color:#8A8D94;"><?php echo esc_html( get_the_date( '', $tb_p ) ); ?></span>
+							</div>
 							<p style="font-size:14px;color:#5B5E64;line-height:1.6;margin:10px 0 12px;"><?php echo esc_html( wp_trim_words( get_the_excerpt( $tb_p ), 24 ) ); ?></p>
 							<a class="tb-readmore" href="<?php echo esc_url( get_permalink( $tb_p ) ); ?>"><?php esc_html_e( 'Read more ›', 'travelblogs' ); ?></a>
 						</div>
