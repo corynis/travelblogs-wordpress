@@ -53,6 +53,63 @@ function tb_diary_breadcrumb( $post_id, $echo = true ) {
 }
 
 /**
+ * Copertina di un Diario (CPT `viaggio`) per le card di archivio.
+ *
+ * Sul sito legacy un Diario non aveva MAI una propria immagine di
+ * copertina: la lista prendeva a caso la miniatura di uno dei suoi
+ * Capitoli (`get_random_chapter_data_from_diary_id()`, `ORDER BY rand()
+ * LIMIT 1`), ri-estratta a ogni caricamento pagina. Replichiamo la stessa
+ * logica qui: se il `viaggio` ha una sua featured image la usiamo (nel
+ * caso in futuro se ne voglia impostare una esplicitamente), altrimenti
+ * peschiamo a caso un Capitolo collegato che abbia una featured image.
+ *
+ * Nessun dato inventato: se non esiste né l'una né l'altra, restituisce
+ * un placeholder neutro (stesso comportamento del sito legacy quando
+ * `$image_path` restava vuoto).
+ *
+ * @param int    $viaggio_id
+ * @param string $size  image size registrata.
+ * @param array  $atts  attributi HTML extra per <img> (class, style, ecc.).
+ * @param bool   $echo  se false, restituisce l'HTML invece di stamparlo.
+ */
+function tb_diary_cover_html( $viaggio_id, $size = 'tb-card', $atts = array(), $echo = true ) {
+	$tb_html = '';
+
+	if ( has_post_thumbnail( $viaggio_id ) ) {
+		$tb_html = get_the_post_thumbnail( $viaggio_id, $size, $atts );
+	} elseif ( function_exists( 'travelblogs_get_capitoli_di_viaggio' ) ) {
+		$tb_capitoli = travelblogs_get_capitoli_di_viaggio( $viaggio_id );
+		$tb_with_img = array();
+		if ( ! empty( $tb_capitoli ) ) {
+			foreach ( $tb_capitoli as $tb_cap ) {
+				$tb_cap_id = is_object( $tb_cap ) ? $tb_cap->ID : (int) $tb_cap;
+				if ( $tb_cap_id && has_post_thumbnail( $tb_cap_id ) ) {
+					$tb_with_img[] = $tb_cap_id;
+				}
+			}
+		}
+		if ( ! empty( $tb_with_img ) ) {
+			// Come nel sito legacy (ORDER BY rand() LIMIT 1): scelta casuale
+			// tra i capitoli con miniatura, ri-estratta a ogni caricamento.
+			$tb_random_cap_id = $tb_with_img[ array_rand( $tb_with_img ) ];
+			$tb_html          = get_the_post_thumbnail( $tb_random_cap_id, $size, $atts );
+		}
+	}
+
+	if ( '' === $tb_html ) {
+		$tb_class = isset( $atts['class'] ) ? $atts['class'] : 'tb-photo';
+		$tb_style = isset( $atts['style'] ) ? $atts['style'] : '';
+		$tb_html  = '<span class="' . esc_attr( $tb_class ) . '" style="' . esc_attr( $tb_style ) . 'display:block;background:#EDEBE5;"></span>';
+	}
+
+	if ( $echo ) {
+		echo wp_kses_post( $tb_html ); // phpcs:ignore -- markup immagine WP, già escapato dalle funzioni core.
+		return '';
+	}
+	return $tb_html;
+}
+
+/**
  * Widget "Destinations": termini di primo livello della tassonomia
  * `destinazione`, con conteggio post e pallino colorato per continente
  * (vedi tb_continent_slug_for_term() in functions.php).

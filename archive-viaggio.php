@@ -34,17 +34,44 @@ get_header();
 					?>
 					<div style="display:flex;gap:24px;flex-wrap:wrap;">
 						<a href="<?php the_permalink(); ?>" style="flex-shrink:0;">
-							<?php if ( has_post_thumbnail() ) : ?>
-								<?php the_post_thumbnail( 'tb-card', array( 'class' => 'tb-photo', 'style' => 'width:280px;height:190px;' ) ); ?>
-							<?php else : ?>
-								<span class="tb-photo" style="width:280px;height:190px;display:block;background:#EDEBE5;"></span>
-							<?php endif; ?>
+							<?php
+							// Copertina: il Diario non ha (mai avuto, anche sul sito
+							// legacy) un'immagine propria — mostriamo la miniatura di
+							// un Capitolo collegato, scelta a caso a ogni caricamento
+							// (vedi tb_diary_cover_html() per il dettaglio).
+							tb_diary_cover_html( get_the_ID(), 'tb-card', array( 'class' => 'tb-photo', 'style' => 'width:280px;height:190px;' ) );
+							?>
 						</a>
 						<div style="flex:1 1 380px;min-width:0;">
+							<?php
+							// Il Diario (`viaggio`) non porta direttamente la tassonomia
+							// `destinazione` — ereditiamo il termine dal primo Capitolo
+							// collegato che ne ha uno, così anche qui c'è enfasi sul tag
+							// come nelle altre sezioni del sito.
+							$tb_diary_dest_term = null;
+							$tb_diary_terms     = taxonomy_exists( 'destinazione' ) ? get_the_terms( get_the_ID(), 'destinazione' ) : array();
+							if ( ! is_wp_error( $tb_diary_terms ) && ! empty( $tb_diary_terms ) ) {
+								$tb_diary_dest_term = $tb_diary_terms[0];
+							} elseif ( function_exists( 'travelblogs_get_capitoli_di_viaggio' ) ) {
+								foreach ( travelblogs_get_capitoli_di_viaggio( get_the_ID() ) as $tb_cap ) {
+									$tb_cap_id    = is_object( $tb_cap ) ? $tb_cap->ID : (int) $tb_cap;
+									$tb_cap_terms = $tb_cap_id ? get_the_terms( $tb_cap_id, 'destinazione' ) : array();
+									if ( ! is_wp_error( $tb_cap_terms ) && ! empty( $tb_cap_terms ) ) {
+										$tb_diary_dest_term = $tb_cap_terms[0];
+										break;
+									}
+								}
+							}
+							?>
+							<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;">
+								<?php if ( $tb_diary_dest_term ) : ?>
+									<a href="<?php echo esc_url( get_term_link( $tb_diary_dest_term ) ); ?>"><?php tb_cat_pill( $tb_diary_dest_term->name, $tb_diary_dest_term->name ); ?></a>
+								<?php endif; ?>
+								<span style="font-size:12px;color:#8A8D94;"><?php echo esc_html( get_the_date() ); ?></span>
+							</div>
 							<h3 style="font-size:21px;margin:0 0 8px;">
 								<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
 							</h3>
-							<div style="font-size:12px;color:#8A8D94;margin-bottom:10px;"><?php echo esc_html( get_the_date() ); ?></div>
 							<p style="font-size:14px;color:#5B5E64;line-height:1.6;margin:0 0 10px;"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 30 ) ); ?></p>
 							<a class="tb-readmore" href="<?php the_permalink(); ?>"><?php esc_html_e( 'Read more ›', 'travelblogs' ); ?></a>
 						</div>

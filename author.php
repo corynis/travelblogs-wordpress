@@ -150,11 +150,12 @@ $tb_country_terms = array_values( $tb_country_terms );
 						?>
 						<div>
 							<a href="<?php the_permalink(); ?>">
-								<?php if ( has_post_thumbnail() ) : ?>
-									<?php the_post_thumbnail( 'tb-card', array( 'class' => 'tb-photo', 'style' => 'height:200px;width:100%;margin-bottom:14px;' ) ); ?>
-								<?php else : ?>
-									<span class="tb-photo" style="height:200px;display:block;margin-bottom:14px;background:#EDEBE5;"></span>
-								<?php endif; ?>
+								<?php
+								// Stessa logica di archive-viaggio.php: il Diario non ha
+								// mai avuto una copertina propria, quindi si prende quella
+								// di un Capitolo collegato (vedi tb_diary_cover_html()).
+								tb_diary_cover_html( get_the_ID(), 'tb-card', array( 'class' => 'tb-photo', 'style' => 'height:200px;width:100%;margin-bottom:14px;' ) );
+								?>
 							</a>
 							<h3 style="font-size:18px;margin-bottom:10px;">
 								<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
