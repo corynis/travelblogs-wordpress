@@ -80,8 +80,9 @@ img{ max-width:100%; display:block; }
 
 .tb-cat{
   display:inline-block; background: color-mix(in srgb, var(--tb-accent) 10%, transparent);
-  color: var(--tb-accent); font-size:11px; font-weight:700; letter-spacing:.03em;
+  color: var(--tb-accent); font-size:11px; font-weight:800; letter-spacing:.04em;
   padding:6px 14px; text-transform:uppercase; border-radius:20px;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tb-accent) 22%, transparent);
 }
 /* varianti colorate per continente, applicate via classe sul termine tassonomia */
 .tb-cat.continente-sud-america{ background: rgba(214,39,46,.10); color: var(--tb-c-sudamerica); }
@@ -215,6 +216,12 @@ img{ max-width:100%; display:block; }
   position:absolute; width:230px; background:#fff; border-radius:10px;
   box-shadow:0 10px 28px rgba(0,0,0,.2); overflow:hidden;
 }
+
+/* ---------- relazione Diario › Capitolo (sotto ogni anteprima di post) ---------- */
+.tb-diary-breadcrumb{ font-size:12px; color:#8A8D94; margin-top:4px; }
+.tb-diary-breadcrumb-label{ text-transform:uppercase; letter-spacing:.03em; font-weight:600; }
+.tb-diary-breadcrumb a{ color: var(--tb-accent); font-weight:600; }
+.tb-diary-breadcrumb a:hover{ text-decoration:underline; }
 
 /* ---------- Home: slider principale (ultime News) ---------- */
 .tb-slide{ opacity:0; visibility:hidden; transition:opacity .5s ease; z-index:1; }

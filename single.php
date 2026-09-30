@@ -127,7 +127,9 @@ while ( have_posts() ) :
 					<?php endif; ?>
 				</div>
 
-				<div class="tb-body">
+				<?php tb_diary_breadcrumb( $tb_post_id ); ?>
+
+				<div class="tb-body" style="margin-top:20px;">
 					<?php the_content(); ?>
 				</div>
 

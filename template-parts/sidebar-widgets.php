@@ -13,6 +13,46 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Stampa (o restituisce) la relazione Diario › Capitolo di un articolo di
+ * diario, come "In <Capitolo> · <Diario>" con entrambi linkati — usata
+ * ovunque compaia un'anteprima di un post (Home, sidebar "recenti",
+ * pagina Post singola) così la gerarchia Diario → Capitolo → Post resta
+ * sempre visibile, non solo nella pagina Capitolo.
+ *
+ * No-op silenzioso se il post non ha un _capitolo_id valido (es. non è
+ * ancora stato collegato, o è un contenuto di altro tipo).
+ *
+ * @param int  $post_id
+ * @param bool $echo  se false, restituisce l'HTML invece di stamparlo.
+ */
+function tb_diary_breadcrumb( $post_id, $echo = true ) {
+	$tb_capitolo_id = get_post_meta( $post_id, '_capitolo_id', true );
+	if ( ! $tb_capitolo_id ) {
+		return '';
+	}
+	$tb_capitolo = get_post( $tb_capitolo_id );
+	if ( ! $tb_capitolo ) {
+		return '';
+	}
+	$tb_viaggio_id = get_post_meta( $tb_capitolo_id, '_viaggio_id', true );
+	$tb_viaggio    = $tb_viaggio_id ? get_post( $tb_viaggio_id ) : null;
+
+	$tb_html  = '<div class="tb-diary-breadcrumb">';
+	$tb_html .= '<span class="tb-diary-breadcrumb-label">' . esc_html__( 'In', 'travelblogs' ) . '</span> ';
+	$tb_html .= '<a href="' . esc_url( get_permalink( $tb_capitolo ) ) . '">' . esc_html( get_the_title( $tb_capitolo ) ) . '</a>';
+	if ( $tb_viaggio ) {
+		$tb_html .= ' · <a href="' . esc_url( get_permalink( $tb_viaggio ) ) . '">' . esc_html( get_the_title( $tb_viaggio ) ) . '</a>';
+	}
+	$tb_html .= '</div>';
+
+	if ( $echo ) {
+		echo wp_kses_post( $tb_html ); // phpcs:ignore -- markup interno, già escapato campo per campo sopra.
+		return '';
+	}
+	return $tb_html;
+}
+
+/**
  * Widget "Destinations": termini di primo livello della tassonomia
  * `destinazione`, con conteggio post e pallino colorato per continente
  * (vedi tb_continent_slug_for_term() in functions.php).
@@ -176,6 +216,9 @@ function tb_widget_recent( $post_type, $widget_title, $count = 3, $with_cat_pill
 							if ( ! is_wp_error( $terms ) && ! empty( $terms ) ) {
 								tb_cat_pill( $terms[0]->name, $terms[0]->name );
 							}
+						}
+						if ( 'post' === $post_type ) {
+							tb_diary_breadcrumb( $item->ID );
 						}
 						?>
 					</div>

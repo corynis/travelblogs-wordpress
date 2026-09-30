@@ -66,20 +66,47 @@ if ( ! defined( 'ABSPATH' ) ) {
 				)
 			);
 		} else {
-			// Fallback statico finché il menu non è configurato in Aspetto → Menu.
+			// Fallback finché il menu non è configurato in Aspetto → Menu.
+			// Gli URL sono risolti dinamicamente (archivio reale del CPT,
+			// pagina reale) invece di essere scritti a mano: uno slug
+			// hardcoded si disallinea silenziosamente se il CPT viene
+			// registrato con un rewrite diverso (è già successo con
+			// "Diari" → /viaggi/ invece di /diari/). Quando un URL non si
+			// riesce a risolvere, il link è omesso invece di puntare a un
+			// indirizzo indovinato.
+			$tb_diari_url = post_type_exists( 'viaggio' ) ? get_post_type_archive_link( 'viaggio' ) : false;
+			$tb_video_url = post_type_exists( 'video' ) ? get_post_type_archive_link( 'video' ) : false;
+			$tb_news_url  = post_type_exists( 'news' ) ? get_post_type_archive_link( 'news' ) : false;
+			$tb_foto_page = get_page_by_path( 'foto' );
+			$tb_foto_url  = $tb_foto_page ? get_permalink( $tb_foto_page ) : false;
+			$tb_contatti_page = get_page_by_path( 'contatti' );
+			$tb_contatti_url  = $tb_contatti_page ? get_permalink( $tb_contatti_page ) : false;
+
+			// "Viaggiatori": con un solo autore attivo linkiamo direttamente
+			// al suo profilo, invece di un archivio-di-tutti-gli-autori che
+			// con la sola Shella non avrebbe senso.
+			$tb_travelers_url = false;
+			$tb_authors       = get_users( array( 'has_published_posts' => array( 'post', 'viaggio' ), 'number' => 2 ) );
+			if ( 1 === count( $tb_authors ) ) {
+				$tb_travelers_url = get_author_posts_url( $tb_authors[0]->ID );
+			}
+
 			$tb_fallback_links = array(
-				'/'                => 'Home',
-				'/viaggiatori/'    => 'Viaggiatori',
-				'/diari/'          => 'Diari',
-				'/video/'          => 'Video',
-				'/foto/'           => 'Foto',
-				'/news/'           => 'News',
-				'/contatti/'       => 'Contatti',
+				'Home'        => home_url( '/' ),
+				'Viaggiatori' => $tb_travelers_url,
+				'Diari'       => $tb_diari_url,
+				'Video'       => $tb_video_url,
+				'Foto'        => $tb_foto_url,
+				'News'        => $tb_news_url,
+				'Contatti'    => $tb_contatti_url,
 			);
-			foreach ( $tb_fallback_links as $tb_url => $tb_label ) {
+			foreach ( $tb_fallback_links as $tb_label => $tb_url ) {
+				if ( ! $tb_url || is_wp_error( $tb_url ) ) {
+					continue;
+				}
 				printf(
 					'<a class="tb-navlink" href="%s">%s</a>',
-					esc_url( home_url( $tb_url ) ),
+					esc_url( $tb_url ),
 					esc_html( $tb_label )
 				);
 			}

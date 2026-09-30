@@ -158,6 +158,7 @@ $tb_dest_primary = ! empty( $tb_dest_posts ) ? array_shift( $tb_dest_posts ) : n
 								<?php if ( ! is_wp_error( $tb_terms ) && ! empty( $tb_terms ) ) { tb_cat_pill( $tb_terms[0]->name, $tb_terms[0]->name ); } ?>
 								<span style="font-size:12px;color:#8A8D94;"><?php echo esc_html( get_the_date( '', $tb_p ) ); ?></span>
 							</div>
+							<?php tb_diary_breadcrumb( $tb_p->ID ); ?>
 							<p style="font-size:14px;color:#5B5E64;line-height:1.6;margin:10px 0 12px;"><?php echo esc_html( wp_trim_words( get_the_excerpt( $tb_p ), 24 ) ); ?></p>
 							<a class="tb-readmore" href="<?php echo esc_url( get_permalink( $tb_p ) ); ?>"><?php esc_html_e( 'Read more ›', 'travelblogs' ); ?></a>
 						</div>
@@ -209,14 +210,18 @@ $tb_dest_primary = ! empty( $tb_dest_posts ) ? array_shift( $tb_dest_posts ) : n
 							<span class="tb-photo" style="height:280px;display:block;margin-bottom:14px;background:#EDEBE5;"></span>
 						<?php endif; ?>
 					</a>
-					<?php
-					$tb_dp_terms = get_the_terms( $tb_dest_primary, 'destinazione' );
-					tb_cat_pill( ( ! is_wp_error( $tb_dp_terms ) && ! empty( $tb_dp_terms ) ) ? $tb_dp_terms[0]->name : __( 'Destinazioni', 'travelblogs' ) );
-					?>
+					<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+						<?php
+						$tb_dp_terms = get_the_terms( $tb_dest_primary, 'destinazione' );
+						tb_cat_pill( ( ! is_wp_error( $tb_dp_terms ) && ! empty( $tb_dp_terms ) ) ? $tb_dp_terms[0]->name : __( 'Destinazioni', 'travelblogs' ) );
+						?>
+						<span style="font-size:12px;color:#8A8D94;"><?php echo esc_html( get_the_date( '', $tb_dest_primary ) ); ?></span>
+					</div>
 					<h3 style="font-size:20px;line-height:1.3;margin:10px 0;">
 						<a href="<?php echo esc_url( get_permalink( $tb_dest_primary ) ); ?>"><?php echo esc_html( get_the_title( $tb_dest_primary ) ); ?></a>
 					</h3>
-					<a class="tb-readmore" href="<?php echo esc_url( get_permalink( $tb_dest_primary ) ); ?>"><?php esc_html_e( 'Read more ›', 'travelblogs' ); ?></a>
+					<?php tb_diary_breadcrumb( $tb_dest_primary->ID ); ?>
+					<a class="tb-readmore" href="<?php echo esc_url( get_permalink( $tb_dest_primary ) ); ?>" style="margin-top:8px;display:inline-flex;"><?php esc_html_e( 'Read more ›', 'travelblogs' ); ?></a>
 				</div>
 				<div style="flex:1 1 45%;min-width:260px;display:flex;flex-direction:column;gap:16px;">
 					<?php foreach ( $tb_dest_posts as $tb_dp ) :
@@ -231,10 +236,14 @@ $tb_dest_primary = ! empty( $tb_dest_posts ) ? array_shift( $tb_dest_posts ) : n
 								<?php endif; ?>
 							</a>
 							<div>
-								<?php tb_cat_pill( ( ! is_wp_error( $tb_dp_terms2 ) && ! empty( $tb_dp_terms2 ) ) ? $tb_dp_terms2[0]->name : __( 'Destinazioni', 'travelblogs' ) ); ?>
+								<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+									<?php tb_cat_pill( ( ! is_wp_error( $tb_dp_terms2 ) && ! empty( $tb_dp_terms2 ) ) ? $tb_dp_terms2[0]->name : __( 'Destinazioni', 'travelblogs' ) ); ?>
+									<span style="font-size:11px;color:#8A8D94;"><?php echo esc_html( get_the_date( '', $tb_dp ) ); ?></span>
+								</div>
 								<div style="font-size:14px;font-weight:600;margin-top:6px;line-height:1.35;">
 									<a href="<?php echo esc_url( get_permalink( $tb_dp ) ); ?>"><?php echo esc_html( get_the_title( $tb_dp ) ); ?></a>
 								</div>
+								<?php tb_diary_breadcrumb( $tb_dp->ID ); ?>
 							</div>
 						</div>
 					<?php endforeach; ?>
