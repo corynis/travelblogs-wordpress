@@ -108,8 +108,25 @@ while ( have_posts() ) :
 				<span style="color:#3A3D42;font-weight:600;"><?php echo esc_html( $tb_viaggio ? get_the_title( $tb_viaggio ) : get_the_title() ); ?></span>
 			</div>
 		</div>
-		<?php if ( $tb_dest_label ) : ?>
-			<div style="font-size:13px;color:var(--tb-accent,#D6272E);font-weight:700;margin-bottom:20px;"><?php echo esc_html( $tb_dest_label ); ?></div>
+		<?php
+		$tb_trip_meta = $tb_viaggio_id ? tb_diary_trip_meta( $tb_viaggio_id ) : array(
+			'continent' => '',
+			'start'     => null,
+			'end'       => null,
+		);
+		?>
+		<?php if ( $tb_dest_label || $tb_trip_meta['continent'] || $tb_trip_meta['start'] ) : ?>
+			<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:20px;">
+				<?php if ( $tb_dest_label ) : ?>
+					<span style="font-size:13px;color:var(--tb-accent,#D6272E);font-weight:700;"><?php echo esc_html( $tb_dest_label ); ?></span>
+				<?php endif; ?>
+				<?php if ( $tb_trip_meta['continent'] ) : ?>
+					<?php tb_cat_pill( $tb_trip_meta['continent'], $tb_trip_meta['continent'] ); ?>
+				<?php endif; ?>
+				<?php if ( $tb_trip_meta['start'] ) : ?>
+					<span style="font-size:12px;color:#8A8D94;"><?php tb_diary_trip_dates_html( $tb_viaggio_id ); ?></span>
+				<?php endif; ?>
+			</div>
 		<?php endif; ?>
 		<div class="tb-title-bar"></div>
 

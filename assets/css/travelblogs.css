@@ -21,6 +21,7 @@
 
   /* palette continenti — usata per tassonomia Destinazione */
   --tb-c-sudamerica: #D6272E;
+  --tb-c-nordamerica:#1F7A6C;
   --tb-c-asia:       #2E8B57;
   --tb-c-africa:     #B4711F;
   --tb-c-europa:     #2C6E9E;
@@ -86,6 +87,7 @@ img{ max-width:100%; display:block; }
 }
 /* varianti colorate per continente, applicate via classe sul termine tassonomia */
 .tb-cat.continente-sud-america{ background: rgba(214,39,46,.10); color: var(--tb-c-sudamerica); }
+.tb-cat.continente-nord-america{ background: rgba(31,122,108,.10); color: var(--tb-c-nordamerica); }
 .tb-cat.continente-asia       { background: rgba(46,139,87,.10); color: var(--tb-c-asia); }
 .tb-cat.continente-africa     { background: rgba(180,113,31,.10); color: var(--tb-c-africa); }
 .tb-cat.continente-europa     { background: rgba(44,110,158,.10); color: var(--tb-c-europa); }

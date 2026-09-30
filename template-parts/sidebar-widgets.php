@@ -53,6 +53,72 @@ function tb_diary_breadcrumb( $post_id, $echo = true ) {
 }
 
 /**
+ * Continente e date del viaggio (CPT `viaggio`) — dati reali migrati
+ * dal sito legacy come postmeta (`_continent`, `_date_start_of_trip`,
+ * `_date_end_of_trip`), semplicemente non ancora esposti nel tema.
+ *
+ * Restituisce un array con chiavi 'continent' (string|''), 'start' e
+ * 'end' (DateTime|null). Ogni chiave assente nel dato migrato resta
+ * vuota/null — nessun valore inventato.
+ *
+ * @param int $viaggio_id
+ * @return array{continent:string,start:?DateTime,end:?DateTime}
+ */
+function tb_diary_trip_meta( $viaggio_id ) {
+	$tb_continent = get_post_meta( $viaggio_id, '_continent', true );
+	$tb_start_raw = get_post_meta( $viaggio_id, '_date_start_of_trip', true );
+	$tb_end_raw   = get_post_meta( $viaggio_id, '_date_end_of_trip', true );
+
+	$tb_start = null;
+	$tb_end   = null;
+	try {
+		if ( $tb_start_raw ) {
+			$tb_start = new DateTime( $tb_start_raw );
+		}
+		if ( $tb_end_raw ) {
+			$tb_end = new DateTime( $tb_end_raw );
+		}
+	} catch ( Exception $e ) {
+		// Data non valida/parsabile nel dato migrato: la trattiamo come assente.
+		$tb_start = null;
+		$tb_end   = null;
+	}
+
+	return array(
+		'continent' => is_string( $tb_continent ) ? $tb_continent : '',
+		'start'     => $tb_start,
+		'end'       => $tb_end,
+	);
+}
+
+/**
+ * Stampa (o restituisce) l'intervallo di date del viaggio in formato
+ * leggibile, es. "17 giu – 15 lug 2007" o "17 giu 2007" se manca la
+ * data di fine. Stringa vuota (no-op) se non c'è nessuna data.
+ *
+ * @param int  $viaggio_id
+ * @param bool $echo
+ */
+function tb_diary_trip_dates_html( $viaggio_id, $echo = true ) {
+	$tb_meta = tb_diary_trip_meta( $viaggio_id );
+	$tb_html = '';
+
+	if ( $tb_meta['start'] && $tb_meta['end'] ) {
+		$tb_same_year = ( $tb_meta['start']->format( 'Y' ) === $tb_meta['end']->format( 'Y' ) );
+		$tb_start_fmt = $tb_same_year ? 'j M' : 'j M Y';
+		$tb_html      = date_i18n( $tb_start_fmt, $tb_meta['start']->getTimestamp() ) . ' – ' . date_i18n( 'j M Y', $tb_meta['end']->getTimestamp() );
+	} elseif ( $tb_meta['start'] ) {
+		$tb_html = date_i18n( 'j M Y', $tb_meta['start']->getTimestamp() );
+	}
+
+	if ( $echo ) {
+		echo esc_html( $tb_html );
+		return '';
+	}
+	return $tb_html;
+}
+
+/**
  * Copertina di un Diario (CPT `viaggio`) per le card di archivio.
  *
  * Sul sito legacy un Diario non aveva MAI una propria immagine di

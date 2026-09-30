@@ -87,21 +87,27 @@ add_action( 'wp_head', 'tb_favicon_meta' );
  * ---------------------------------------------------------------
  * Helper: pillola categoria/tag colorata per continente.
  *
- * La tassonomia "destinazione" e' gerarchica Paese/Città; il
- * continente non è (ancora) un campo esplicito nel dato migrato.
- * Finché non c'è un campo dedicato, si deduce dal nome del termine
- * di primo livello tramite questa mappa — da sostituire con un
- * campo tassonomia "Continente" reale se/quando si aggiunge.
+ * Il Diario (`viaggio`) ha un vero continente migrato come postmeta
+ * `_continent` (nome in inglese, es. "South America" — dalla vecchia
+ * tabella tblog_continent), quindi non è più una deduzione dal nome
+ * del termine `destinazione`: è dato reale. Manteniamo comunque anche
+ * le chiavi italiane/della tassonomia come fallback per i contesti in
+ * cui non abbiamo un `_continent` a disposizione (es. un termine
+ * `destinazione` isolato senza viaggio collegato).
  * ---------------------------------------------------------------
  */
 function tb_continent_slug_for_term( $term_name ) {
 	$map = array(
-		'sud america' => 'sud-america',
-		'sudamerica'  => 'sud-america',
-		'asia'        => 'asia',
-		'africa'      => 'africa',
-		'europa'      => 'europa',
-		'oceania'     => 'oceania',
+		'sud america'   => 'sud-america',
+		'sudamerica'    => 'sud-america',
+		'south america' => 'sud-america',
+		'nord america'  => 'nord-america',
+		'north america' => 'nord-america',
+		'asia'          => 'asia',
+		'africa'        => 'africa',
+		'europa'        => 'europa',
+		'europe'        => 'europa',
+		'oceania'       => 'oceania',
 	);
 	$key = mb_strtolower( trim( $term_name ), 'UTF-8' );
 	return isset( $map[ $key ] ) ? $map[ $key ] : '';

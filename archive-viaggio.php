@@ -44,10 +44,15 @@ get_header();
 						</a>
 						<div style="flex:1 1 380px;min-width:0;">
 							<?php
-							// Il Diario (`viaggio`) non porta direttamente la tassonomia
-							// `destinazione` — ereditiamo il termine dal primo Capitolo
-							// collegato che ne ha uno, così anche qui c'è enfasi sul tag
-							// come nelle altre sezioni del sito.
+							// Continente: dato reale migrato (_continent), non più una
+							// deduzione dal nome del termine `destinazione`. Se manca
+							// (viaggio senza continente compilato), niente pillola.
+							$tb_diary_trip = tb_diary_trip_meta( get_the_ID() );
+							$tb_continent  = $tb_diary_trip['continent'];
+
+							// Il termine `destinazione` invece resta utile come link —
+							// il diario non lo porta direttamente, lo ereditiamo dal
+							// primo Capitolo collegato che ne ha uno.
 							$tb_diary_dest_term = null;
 							$tb_diary_terms     = taxonomy_exists( 'destinazione' ) ? get_the_terms( get_the_ID(), 'destinazione' ) : array();
 							if ( ! is_wp_error( $tb_diary_terms ) && ! empty( $tb_diary_terms ) ) {
@@ -64,14 +69,31 @@ get_header();
 							}
 							?>
 							<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;">
-								<?php if ( $tb_diary_dest_term ) : ?>
+								<?php if ( $tb_continent ) : ?>
+									<?php tb_cat_pill( $tb_continent, $tb_continent ); ?>
+								<?php elseif ( $tb_diary_dest_term ) : ?>
 									<a href="<?php echo esc_url( get_term_link( $tb_diary_dest_term ) ); ?>"><?php tb_cat_pill( $tb_diary_dest_term->name, $tb_diary_dest_term->name ); ?></a>
 								<?php endif; ?>
-								<span style="font-size:12px;color:#8A8D94;"><?php echo esc_html( get_the_date() ); ?></span>
+								<span style="font-size:12px;color:#8A8D94;">
+									<?php
+									// Date reali del viaggio (_date_start_of_trip/_date_end_of_trip)
+									// quando ci sono, altrimenti la data di pubblicazione dell'articolo.
+									if ( $tb_diary_trip['start'] ) {
+										tb_diary_trip_dates_html( get_the_ID() );
+									} else {
+										echo esc_html( get_the_date() );
+									}
+									?>
+								</span>
 							</div>
 							<h3 style="font-size:21px;margin:0 0 8px;">
 								<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
 							</h3>
+							<?php if ( $tb_diary_dest_term ) : ?>
+								<div style="font-size:12px;color:#8A8D94;margin-bottom:8px;">
+									<a href="<?php echo esc_url( get_term_link( $tb_diary_dest_term ) ); ?>" style="color:inherit;"><?php echo esc_html( $tb_diary_dest_term->name ); ?></a>
+								</div>
+							<?php endif; ?>
 							<p style="font-size:14px;color:#5B5E64;line-height:1.6;margin:0 0 10px;"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 30 ) ); ?></p>
 							<a class="tb-readmore" href="<?php the_permalink(); ?>"><?php esc_html_e( 'Read more ›', 'travelblogs' ); ?></a>
 						</div>
