@@ -58,7 +58,8 @@ get_header();
 							if ( ! is_wp_error( $tb_diary_terms ) && ! empty( $tb_diary_terms ) ) {
 								$tb_diary_dest_term = $tb_diary_terms[0];
 							} elseif ( function_exists( 'travelblogs_get_capitoli_di_viaggio' ) ) {
-								foreach ( travelblogs_get_capitoli_di_viaggio( get_the_ID() ) as $tb_cap ) {
+								// ->posts: la funzione del mu-plugin restituisce un WP_Query.
+								foreach ( travelblogs_get_capitoli_di_viaggio( get_the_ID() )->posts as $tb_cap ) {
 									$tb_cap_id    = is_object( $tb_cap ) ? $tb_cap->ID : (int) $tb_cap;
 									$tb_cap_terms = $tb_cap_id ? get_the_terms( $tb_cap_id, 'destinazione' ) : array();
 									if ( ! is_wp_error( $tb_cap_terms ) && ! empty( $tb_cap_terms ) ) {

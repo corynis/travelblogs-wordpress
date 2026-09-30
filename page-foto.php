@@ -42,7 +42,8 @@ if ( $tb_has_capitolo ) {
 		$tb_count += count( get_attached_media( 'image', $tb_cap_id ) );
 
 		if ( function_exists( 'travelblogs_get_post_di_capitolo' ) ) {
-			foreach ( travelblogs_get_post_di_capitolo( $tb_cap_id ) as $tb_dp ) {
+			// ->posts: la funzione del mu-plugin restituisce un WP_Query.
+			foreach ( travelblogs_get_post_di_capitolo( $tb_cap_id )->posts as $tb_dp ) {
 				$tb_count += has_post_thumbnail( $tb_dp ) ? 1 : 0;
 				$tb_count += count( get_attached_media( 'image', $tb_dp ) );
 			}

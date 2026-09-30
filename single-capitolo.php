@@ -28,8 +28,11 @@ while ( have_posts() ) :
 
 	// Tutti i capitoli dello stesso viaggio, in ordine cronologico — usati sia
 	// per il banner "mappa" che per i chip e l'elenco "All Diary Chapters".
+	// NOTA: travelblogs_get_capitoli_di_viaggio() del mu-plugin restituisce un
+	// oggetto WP_Query, non un array di post — serve ->posts per ottenere
+	// l'elenco vero e proprio.
 	$tb_capitoli = $tb_viaggio_id && function_exists( 'travelblogs_get_capitoli_di_viaggio' )
-		? travelblogs_get_capitoli_di_viaggio( $tb_viaggio_id )
+		? travelblogs_get_capitoli_di_viaggio( $tb_viaggio_id )->posts
 		: array( get_post( $tb_capitolo_id ) );
 
 	if ( empty( $tb_capitoli ) ) {
@@ -182,7 +185,7 @@ while ( have_posts() ) :
 				// Conteggio immagini: quante immagini in evidenza hanno gli
 				// articoli di diario collegati a questo capitolo.
 				$tb_diary_posts = function_exists( 'travelblogs_get_post_di_capitolo' )
-					? travelblogs_get_post_di_capitolo( $tb_capitolo_id )
+					? travelblogs_get_post_di_capitolo( $tb_capitolo_id )->posts
 					: array();
 				$tb_gallery_count = 0;
 				foreach ( $tb_diary_posts as $tb_dp ) {

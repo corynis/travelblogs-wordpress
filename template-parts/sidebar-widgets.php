@@ -144,7 +144,9 @@ function tb_diary_cover_html( $viaggio_id, $size = 'tb-card', $atts = array(), $
 	if ( has_post_thumbnail( $viaggio_id ) ) {
 		$tb_html = get_the_post_thumbnail( $viaggio_id, $size, $atts );
 	} elseif ( function_exists( 'travelblogs_get_capitoli_di_viaggio' ) ) {
-		$tb_capitoli = travelblogs_get_capitoli_di_viaggio( $viaggio_id );
+		// travelblogs_get_capitoli_di_viaggio() del mu-plugin restituisce un
+		// WP_Query, non un array — serve ->posts.
+		$tb_capitoli = travelblogs_get_capitoli_di_viaggio( $viaggio_id )->posts;
 		$tb_with_img = array();
 		if ( ! empty( $tb_capitoli ) ) {
 			foreach ( $tb_capitoli as $tb_cap ) {
