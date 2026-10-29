@@ -55,6 +55,10 @@ while ( have_posts() ) :
 
 			<div class="tb-col-main">
 
+				<?php if ( tb_trip_map( $tb_capitoli, 0, true ) ) : ?>
+					<div style="height:28px;"></div>
+				<?php endif; ?>
+
 				<div style="margin-bottom:28px;">
 					<?php tb_diary_cover_html( $tb_viaggio_id, 'tb-hero', array( 'class' => 'tb-photo', 'style' => 'width:100%;height:auto;aspect-ratio:16/7;object-fit:cover;' ) ); ?>
 				</div>

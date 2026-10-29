@@ -17,6 +17,7 @@ define( 'TB_ACCENT_DEFAULT', '#D6272E' );
 
 require_once get_template_directory() . '/inc/class-tb-nav-walker.php';
 require_once get_template_directory() . '/template-parts/sidebar-widgets.php';
+require_once get_template_directory() . '/inc/trip-map.php';
 
 /**
  * Theme setup.

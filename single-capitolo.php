@@ -49,6 +49,7 @@ while ( have_posts() ) :
 	$tb_author_name = get_the_author_meta( 'display_name', $tb_author_id );
 	?>
 
+	<?php if ( ! tb_trip_map( $tb_capitoli, $tb_capitolo_id ) ) : // mappa reale se ci sono coordinate, altrimenti banner decorativo ?>
 	<!-- banner mappa (decorativo — vedi nota sopra) -->
 	<div class="tb-gmap">
 		<div class="tb-gmap-toggle"><span class="active">Map</span><span>Satellite</span></div>
@@ -99,6 +100,7 @@ while ( have_posts() ) :
 		<div class="tb-gmap-zoom"><span>+</span><span>&minus;</span></div>
 		<div class="tb-gmap-attrib"><?php esc_html_e( 'Map data © · Termini', 'travelblogs' ); ?></div>
 	</div>
+	<?php endif; ?>
 
 	<div style="max-width:1280px;margin:0 auto;padding:36px 24px 60px;">
 

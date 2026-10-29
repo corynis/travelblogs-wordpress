@@ -309,3 +309,15 @@ img{ max-width:100%; display:block; }
   .tb-sidebar{ flex:1 1 auto; width:100%; }
   .tb-col-side{ flex:1 1 auto; width:100%; position:static !important; }
 }
+
+/* Mappa reale (Leaflet) — pin numerati nello stile del brand */
+.tb-map-live{ background:#EDEFE4; z-index:0; }
+.tb-lpin{
+  width:30px; height:30px; border-radius:50% 50% 50% 0; transform:rotate(-45deg);
+  display:flex; align-items:center; justify-content:center; background:#0F172A; border:3px solid #fff;
+  box-shadow:0 3px 8px rgba(0,0,0,.3); color:#fff; font:800 12px 'Archivo',sans-serif;
+}
+.tb-lpin span{ transform:rotate(45deg); }
+.tb-lpin.is-current{ background:var(--tb-accent,#D6272E); }
+.tb-map-live .leaflet-popup-content{ font-family:'Work Sans',sans-serif; font-size:14px; margin:12px 14px; }
+.tb-map-live .leaflet-popup-content a{ color:#0F172A; }
