@@ -90,6 +90,15 @@ while ( have_posts() ) :
 			<!-- CONTENUTO CENTRALE -->
 			<div class="tb-col-main" style="flex:1 1 700px;">
 
+				<?php
+				// Mappa reale: i racconti dello stesso capitolo (con quello corrente
+				// evidenziato); se nessuno ha coordinate, resta il banner decorativo.
+				$tb_map_cap   = (int) get_post_meta( $tb_post_id, '_capitolo_id', true );
+				$tb_map_posts = ( $tb_map_cap && function_exists( 'travelblogs_get_post_di_capitolo' ) )
+					? travelblogs_get_post_di_capitolo( $tb_map_cap )->posts
+					: array( get_post( $tb_post_id ) );
+				if ( ! tb_trip_map( $tb_map_posts, $tb_post_id, true ) ) :
+				?>
 				<div class="tb-gmap tb-gmap--inline">
 					<div class="tb-gmap-toggle"><span class="active">Map</span><span>Satellite</span></div>
 
@@ -112,6 +121,7 @@ while ( have_posts() ) :
 					<div class="tb-gmap-zoom"><span>+</span><span>&minus;</span></div>
 					<div class="tb-gmap-attrib"><?php esc_html_e( 'Map data © · Termini', 'travelblogs' ); ?></div>
 				</div>
+				<?php endif; ?>
 
 				<?php if ( $tb_dest_label ) : ?>
 					<div style="margin-bottom:14px;"><?php tb_cat_pill( $tb_dest_label, $tb_dest_label ); ?></div>

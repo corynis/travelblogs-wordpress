@@ -49,7 +49,12 @@ while ( have_posts() ) :
 	$tb_author_name = get_the_author_meta( 'display_name', $tb_author_id );
 	?>
 
-	<?php if ( ! tb_trip_map( $tb_capitoli, $tb_capitolo_id ) ) : // mappa reale se ci sono coordinate, altrimenti banner decorativo ?>
+	<?php
+	// Mappa reale: prima i racconti di questo capitolo, poi i capitoli del viaggio;
+	// senza coordinate resta il banner decorativo.
+	$tb_map_posts = function_exists( 'travelblogs_get_post_di_capitolo' ) ? travelblogs_get_post_di_capitolo( $tb_capitolo_id )->posts : array();
+	if ( ! tb_trip_map( $tb_map_posts, 0 ) && ! tb_trip_map( $tb_capitoli, $tb_capitolo_id ) ) :
+	?>
 	<!-- banner mappa (decorativo — vedi nota sopra) -->
 	<div class="tb-gmap">
 		<div class="tb-gmap-toggle"><span class="active">Map</span><span>Satellite</span></div>
