@@ -103,12 +103,15 @@ while ( have_posts() ) :
 	<div style="max-width:1280px;margin:0 auto;padding:36px 24px 60px;">
 
 		<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:10px;">
-			<h1 style="font-size:34px;"><?php echo esc_html( $tb_viaggio ? get_the_title( $tb_viaggio ) : get_the_title() ); ?></h1>
+			<h1 style="font-size:34px;"><?php the_title(); ?></h1>
 			<div style="font-size:13px;color:#8A8D94;">
 				<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'travelblogs' ); ?></a> ›
 				<?php esc_html_e( 'Viaggiatori', 'travelblogs' ); ?> ›
 				<a href="<?php echo esc_url( get_author_posts_url( $tb_author_id ) ); ?>"><?php echo esc_html( $tb_author_name ); ?></a> ›
-				<span style="color:#3A3D42;font-weight:600;"><?php echo esc_html( $tb_viaggio ? get_the_title( $tb_viaggio ) : get_the_title() ); ?></span>
+				<?php if ( $tb_viaggio ) : ?>
+					<a href="<?php echo esc_url( get_permalink( $tb_viaggio ) ); ?>"><?php echo esc_html( get_the_title( $tb_viaggio ) ); ?></a> ›
+				<?php endif; ?>
+				<span style="color:#3A3D42;font-weight:600;"><?php the_title(); ?></span>
 			</div>
 		</div>
 		<?php
@@ -152,29 +155,46 @@ while ( have_posts() ) :
 					</div>
 				<?php endif; ?>
 
-				<div class="tb-secbar" style="margin-bottom:24px;"><?php esc_html_e( 'All Diary Chapters', 'travelblogs' ); ?></div>
+				<?php
+				// Contenuto del capitolo: descrizione + racconti (post) collegati.
+				$tb_chapter_posts = function_exists( 'travelblogs_get_post_di_capitolo' )
+					? travelblogs_get_post_di_capitolo( $tb_capitolo_id )->posts
+					: array();
+				?>
 
-				<div style="display:flex;flex-direction:column;gap:28px;">
-					<?php foreach ( $tb_capitoli as $tb_cap ) : ?>
-						<div style="display:flex;gap:20px;">
-							<a href="<?php echo esc_url( get_permalink( $tb_cap ) ); ?>" style="flex-shrink:0;">
-								<?php if ( has_post_thumbnail( $tb_cap->ID ) ) : ?>
-									<?php echo get_the_post_thumbnail( $tb_cap->ID, 'tb-card', array( 'class' => 'tb-photo', 'style' => 'width:220px;height:150px;' ) ); ?>
-								<?php else : ?>
-									<span class="tb-photo" style="width:220px;height:150px;display:block;background:#EDEBE5;"></span>
-								<?php endif; ?>
-							</a>
-							<div>
-								<h3 style="font-size:19px;margin-bottom:8px;">
-									<a href="<?php echo esc_url( get_permalink( $tb_cap ) ); ?>"><?php echo esc_html( get_the_title( $tb_cap ) ); ?></a>
-								</h3>
-								<div style="font-size:12px;color:#8A8D94;margin-bottom:10px;"><?php echo esc_html( get_the_date( '', $tb_cap ) ); ?></div>
-								<p style="font-size:14px;color:#5B5E64;line-height:1.6;margin:0 0 12px;"><?php echo esc_html( wp_trim_words( get_the_excerpt( $tb_cap ), 28 ) ); ?></p>
-								<a class="tb-readmore" href="<?php echo esc_url( get_permalink( $tb_cap ) ); ?>"><?php esc_html_e( 'Read more ›', 'travelblogs' ); ?></a>
+				<?php if ( '' !== trim( wp_strip_all_tags( get_the_content() ) ) ) : ?>
+					<div class="tb-article-body" style="margin-bottom:32px;"><?php the_content(); ?></div>
+				<?php elseif ( has_excerpt() ) : ?>
+					<p style="font-size:16px;line-height:1.7;color:#3A3D42;margin:0 0 32px;"><?php echo esc_html( get_the_excerpt() ); ?></p>
+				<?php endif; ?>
+
+				<div class="tb-secbar" style="margin-bottom:24px;"><?php esc_html_e( 'Racconti di questo capitolo', 'travelblogs' ); ?></div>
+
+				<?php if ( empty( $tb_chapter_posts ) ) : ?>
+					<p style="color:#5B5E64;"><?php esc_html_e( 'Nessun racconto in questo capitolo.', 'travelblogs' ); ?></p>
+				<?php else : ?>
+					<div style="display:flex;flex-direction:column;gap:28px;">
+						<?php foreach ( $tb_chapter_posts as $tb_dp ) : ?>
+							<div style="display:flex;gap:20px;flex-wrap:wrap;">
+								<a href="<?php echo esc_url( get_permalink( $tb_dp ) ); ?>" style="flex-shrink:0;">
+									<?php if ( has_post_thumbnail( $tb_dp ) ) : ?>
+										<?php echo get_the_post_thumbnail( $tb_dp, 'tb-card', array( 'class' => 'tb-photo', 'style' => 'width:220px;height:150px;' ) ); ?>
+									<?php else : ?>
+										<span class="tb-photo" style="width:220px;height:150px;display:block;background:#EDEBE5;"></span>
+									<?php endif; ?>
+								</a>
+								<div style="flex:1 1 260px;min-width:0;">
+									<h3 style="font-size:19px;margin-bottom:8px;">
+										<a href="<?php echo esc_url( get_permalink( $tb_dp ) ); ?>"><?php echo esc_html( get_the_title( $tb_dp ) ); ?></a>
+									</h3>
+									<div style="font-size:12px;color:#8A8D94;margin-bottom:10px;"><?php echo esc_html( get_the_date( '', $tb_dp ) ); ?></div>
+									<p style="font-size:14px;color:#5B5E64;line-height:1.6;margin:0 0 12px;"><?php echo esc_html( wp_trim_words( get_the_excerpt( $tb_dp ), 28 ) ); ?></p>
+									<a class="tb-readmore" href="<?php echo esc_url( get_permalink( $tb_dp ) ); ?>"><?php esc_html_e( 'Read more ›', 'travelblogs' ); ?></a>
+								</div>
 							</div>
-						</div>
-					<?php endforeach; ?>
-				</div>
+						<?php endforeach; ?>
+					</div>
+				<?php endif; ?>
 
 			</div>
 
