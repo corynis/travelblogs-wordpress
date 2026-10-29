@@ -105,6 +105,7 @@ get_header();
 					<?php
 					$tb_links = paginate_links(
 						array(
+							'base'      => str_replace( PHP_INT_MAX, '%#%', esc_url( get_pagenum_link( PHP_INT_MAX ) ) ),
 							'format'    => '',
 							'current'   => max( 1, get_query_var( 'paged' ) ),
 							'total'     => $GLOBALS['wp_query']->max_num_pages,
